@@ -11,7 +11,7 @@ class Idle extends order {
 
   @override
   void turnOn() {
-    print("$hours:$mins");
+    print("$hours:$mins in Idle state");
   }
 
   @override
@@ -50,7 +50,17 @@ void main(List<String> arguments) {
   List<order> state = [Idle(hours, mins), SetHours(), SetMins()];
 
   for (var i = 0; i < input.length; i++) {
-    if (input[i] == 'on') {}
+    if (input[i] == 'on') {
+      //print(input[i]);
+      hours = int.parse(input[i + 1]);
+      mins = int.parse(input[i + 2]);
+      if (hours == 0 && mins == 0) {
+        state[0].turnOn;
+        currentState = 'Idle';
+      }
+    } else {
+      if (input[i] == 'set') {}
+    }
   }
 
   //print(input);
