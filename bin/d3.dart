@@ -5,11 +5,19 @@ class order {
 }
 
 class Idle extends order {
-  @override
-  void turnOn() {}
+  int hours;
+  int mins;
+  Idle(this.hours, this.mins);
 
   @override
-  void set() {}
+  void turnOn() {
+    print("$hours:$mins");
+  }
+
+  @override
+  void set() {
+    print("$hours:$mins");
+  }
 }
 
 class SetHours extends order {
@@ -32,14 +40,18 @@ class SetMins extends order {
 }
 
 void main(List<String> arguments) {
-  List<dynamic> input = ['on 18.0', 'set', 'inc', 'set', 'inc', 'inc', 'set'];
-
-  List<order> state = [Idle(), SetHours(), SetMins()];
+  const String text = 'on 18 0 set inc set inc inc set';
+  var input = text.split(' ');
 
   int hours = 0;
   int mins = 0;
+  String currentState = '';
 
-  for (var input in input) {}
+  List<order> state = [Idle(hours, mins), SetHours(), SetMins()];
+
+  for (var i = 0; i < input.length; i++) {
+    if (input[i] == 'on') {}
+  }
 
   //print(input);
 }
