@@ -1,3 +1,5 @@
 void main(List<String> arguments) {
-  print('Hello world!');
+  List<String> status = ['on 18.0', 'set', 'inc', 'set', 'inc', 'inc', 'set'];
+
+  print(status);
 }
