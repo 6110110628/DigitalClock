@@ -5,21 +5,41 @@ class order {
 }
 
 class Idle extends order {
-  print();
+  @override
+  void turnOn() {}
+
+  @override
+  void set() {}
 }
 
-class SetHours {}
+class SetHours extends order {
+  @override
+  void turnOn() {}
 
-class SetMins {}
+  @override
+  void set() {}
+
+  @override
+  void inc() {}
+}
+
+class SetMins extends order {
+  @override
+  void set() {}
+
+  @override
+  void inc() {}
+}
 
 void main(List<String> arguments) {
-  List<String> input = ['on 18.0', 'set', 'inc', 'set', 'inc', 'inc', 'set'];
+  List<dynamic> input = ['on 18.0', 'set', 'inc', 'set', 'inc', 'inc', 'set'];
 
-  List<order> state = [Idle(), SetHours(), SetMiins()];
+  List<order> state = [Idle(), SetHours(), SetMins()];
 
-  for (var input in input) {
-    print(input);
-  }
+  int hours = 0;
+  int mins = 0;
+
+  for (var input in input) {}
 
   //print(input);
 }
