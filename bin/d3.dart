@@ -1,67 +1,124 @@
-class order {
-  void turnOn() {}
-  void set() {}
-  void inc() {}
-}
-
-class Idle extends order {
-  int hours;
-  int mins;
-  Idle(this.hours, this.mins);
-
-  @override
-  void turnOn() {
-    print("$hours:$mins in Idle state");
-  }
-
-  @override
-  void set() {
-    print("$hours:$mins");
-  }
-}
-
-class SetHours extends order {
-  @override
-  void turnOn() {}
-
-  @override
-  void set() {}
-
-  @override
-  void inc() {}
-}
-
-class SetMins extends order {
-  @override
-  void set() {}
-
-  @override
-  void inc() {}
-}
+const inputs = [
+  '0 0',
+  'inc',
+  'set',
+  'inc',
+  'inc',
+  'inc',
+  'set',
+  'inc',
+  'set',
+];
 
 void main(List<String> arguments) {
-  const String text = 'on 18 0 set inc set inc inc set';
-  var input = text.split(' ');
+  var ctx = Context(IdleState());
+  var items = inputs[0].split(' ');
+  var clock = Clock(ctx, int.parse(items[0]), int.parse(items[1]));
 
-  int hours = 0;
-  int mins = 0;
-  String currentState = '';
-
-  List<order> state = [Idle(hours, mins), SetHours(), SetMins()];
-
-  for (var i = 0; i < input.length; i++) {
-    if (input[i] == 'on') {
-      //print(input[i]);
-      hours = int.parse(input[i + 1]);
-      mins = int.parse(input[i + 2]);
-      if (hours == 0 && mins == 0) {
-        state[0].turnOn;
-        currentState = 'Idle';
-      }
-    } else {
-      if (input[i] == 'set') {}
+  for (var i = 0; i < inputs.length; i++) {
+    switch (inputs[i]) {
+      case 'inc':
+        clock.doInc();
+        break;
+      case 'set':
+        clock.doSet();
     }
   }
+  print(clock);
+  print('State = ${ctx.current.getName()}');
+}
 
-  //print(input);
+class Clock {
+  final Context ctx;
+  int hour;
+  int min;
+
+  Clock(this.ctx, this.hour, this.min) {
+    ctx.clock = this;
+  }
+
+  void doSet() {
+    ctx.goNext();
+  }
+
+  void doInc() {
+    ctx.current.doInc(ctx);
+  }
+
+  @override
+  String toString() {
+    return '$hour: $min';
+  }
+}
+
+class Context {
+  State current;
+  Clock? clock;
+
+  Context(this.current);
+
+  void goNext() {
+    current.goNext(this);
+  }
+
+  void setState(State next) {
+    current = next;
+  }
+}
+
+abstract class State {
+  void goNext(Context ctx);
+  void doInc(Context ctx);
+  String getName();
+}
+
+class IdleState implements State {
+  @override
+  void goNext(Context ctx) {
+    ctx.setState(SettingHourState());
+  }
+
+  @override
+  void doInc(Context ctx) {
+    // do nothing
+  }
+
+  @override
+  String getName() {
+    return 'idle';
+  }
+}
+
+class SettingHourState implements State {
+  @override
+  void goNext(Context ctx) {
+    ctx.setState(SettingMinState());
+  }
+
+  @override
+  void doInc(Context ctx) {
+    ctx.clock!.hour = (ctx.clock!.hour + 1) % 24;
+  }
+
+  @override
+  String getName() {
+    return 'SettingHour';
+  }
+}
+
+class SettingMinState implements State {
+  @override
+  void goNext(Context ctx) {
+    ctx.setState(IdleState());
+  }
+
+  @override
+  void doInc(Context ctx) {
+    ctx.clock!.min = (ctx.clock!.min + 1) % 60;
+  }
+
+  @override
+  String getName() {
+    return 'SettingMin';
+  }
 }
